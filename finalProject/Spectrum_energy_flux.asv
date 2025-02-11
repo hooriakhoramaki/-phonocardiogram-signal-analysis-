@@ -1,0 +1,17 @@
+function detection_function = Spectrum_energy_flux(signal,fs)
+
+ window_length = 256;
+    overlap = 128;
+    [S, f, t] = stft(signal, fs, 'Window', hamming(window_length), 'OverlapLength', overlap, 'FFTLength', window_length);
+    Zxx = abs(S);
+    freq_indices = find(f >= 25 & f <= 450);
+    Zxx = Zxx(freq_indices, :);
+    spectral_flux = diff(Zxx, 1, 2);
+    detection_function = sum(spectral_flux, 1);
+    detection_function = max(detection_function, 0);
+    detection_function = smoothdata(detection_function, 'gaussian', 5);
+
+    waterfall(F,T,abs(S(:,:,1))')
+helperGraphicsOpt(1)
+end
+
